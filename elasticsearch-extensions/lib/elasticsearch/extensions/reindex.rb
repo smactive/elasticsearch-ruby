@@ -123,11 +123,13 @@ module Elasticsearch
         def perform
           output = { errors: 0 }
 
-          response = arguments[:source][:client].search(
+          query = {
             index: arguments[:source][:index],
             scroll: arguments[:scroll],
             size: arguments[:batch_size]
-          )
+          }.merge(arguments[:source].slice(:body))
+
+          response = arguments[:source][:client].search(query)
 
           documents = response['hits']['hits']
 
